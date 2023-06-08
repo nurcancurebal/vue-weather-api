@@ -1,7 +1,8 @@
 <template>
   <div>
     <div v-if="loading">
-      <RowValue :item="weatherValues" />
+      <RowValue />
+      <SameValue />
     </div>
     <button @click="currentValue">Get Weather</button>
   </div>
@@ -9,15 +10,15 @@
 
 <script>
 import RowValue from "./RowValue";
+import SameValue from "./SameValue";
 
 export default {
   components: {
     RowValue,
+    SameValue,
   },
   data() {
-    return {
-      weatherValues: [],
-    };
+    return {};
   },
   methods: {
     currentValue() {
@@ -33,7 +34,7 @@ export default {
             body: response.body,
           };
 
-          this.weatherValues.unshift(value);
+          this.$store.commit("setWeatherValue", value);
         },
         (response) => {
           // error callback
@@ -44,10 +45,10 @@ export default {
   },
   computed: {
     loading() {
-      if (this.weatherValues !== []) {
-        return true;
-      } else {
+      if (this.$store.state.weatherValues.length === 0) {
         return false;
+      } else {
+        return true;
       }
     },
   },
